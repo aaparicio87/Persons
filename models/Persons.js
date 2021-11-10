@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const db = require('../config/db');
+const Childs = require('../models/Childs');
 
 const Persons = db.define('Persons', {
 
@@ -66,5 +67,5 @@ const Persons = db.define('Persons', {
   },{
     tableName: 'Persons'
   });
-
+  Persons.hasMany(Childs, { onDelete: 'cascade' })
   module.exports = Persons;

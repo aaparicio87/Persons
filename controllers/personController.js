@@ -1,79 +1,76 @@
 const Persons = require('../models/Persons');
-
+const Childs = require('../models/Childs')
 
 module.exports = {
 
-    async addCar(req, res){
-        let { price, possession_years, brandId, colorId, image }= req.body;
-
+    async addPerson(req, res){
+        let { firstName, lastName, gender, age, married }= req.body;
         try {
-            const brand = await Brands.findByPk(brandId);
-            const color = await Colors.findByPk(colorId);
-            if (brand && color){
-                Cars.create({
-                    price: price,
-                    possession_years: possession_years,
-                    image: image,
-                    BrandId: brandId,
-                    ColorId: colorId
+                Persons.create({
+                    firstName: firstName,
+                    lastName: lastName,
+                    gender: gender,
+                    age: age,
+                    married: married
                 });
+                return res.status(200).json({msg: 'Person created'});
 
-                return res.status(200).json({msg: 'Car created'});    
-            }
-            return res.status(400).json({ message: 'one the parameters passed is not valid' }); 
         } catch (error) {
-            return res.status(500).json({ error: error.message })  
+            return res.status(500).json({ error: error.message }) 
         }
     },
 
-    async showCars(req, res){
+    async showPersons(req, res){
         try {
-            const cars = await CarRepo.carsNotRent();
-            return res.status(200).json({cars: cars});
-        } catch (error) {
-            return res.status(500).json({ error: error.message })
-        }
-    },
-
-    async showCar(req, res){
-        const { uuid } = req.params;
-        try {
-            car = await Cars.find({where: {uuid: uuid}});
-            if (!car){
-                res.json({msg: 'Car does not exist'});
-            }
-            res.json(car);
+            const persons = await Persons.findAll({
+                attributes: ['*', sequelize.fn('COUNT', sequelize.col('Childs.PersonId')), "childCount"],
+                include: { model:Childs, required: true }
+            })
+            return res.status(200).json({ persons: persons });
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }
     },
 
-    async updateCar(req, res){
+    async showPerson(req, res){
         const { uuid } = req.params;
-        const { possession_years, brandId, colorId, image } = req.body;
-
         try {
-            await Cars.update(
+            let person = await Persons.findOne({ where : { uuid: uuid } , include: { model:Childs, required: true }});
+            if (!person){
+                res.json({msg: 'Person does not exist'});
+            }
+            res.json(person);
+        } catch (error) {
+            return res.status(500).json({ error: error.message })
+        }
+    },
+
+    async updatePerson(req, res){
+        const { uuid } = req.params;
+        const { firstName, lastName, gender, age, married } = req.body;
+        
+        try {
+            await Persons.update(
                 {
-                    price: price,
-                    possession_years: possession_years,
-                    image: image,
-                    BrandId: brandId,
-                    ColorId: colorId
+                    firstName: firstName,
+                    lastName: lastName,
+                    gender: gender,
+                    age: age,
+                    married: married
                 },
                 { where: { uuid: uuid } }
             )
-            res.json({ msg: 'Car Updated' });
+            res.json({ msg: 'Person Updated' });
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }
     },
 
-    async deletCar(req, res){
+    async deletePerson(req, res){
         const { uuid } = req.params;
         try {
-            await Cars.destroy({ where: { uuid: uuid }});
-            res.json({ msg: 'Car Deleted' });
+            await Persons.destroy({ where: { uuid: uuid }});
+            res.json({ msg: 'Person Deleted' });
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }

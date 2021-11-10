@@ -1,41 +1,44 @@
+const Childs = require('../models/Childs');
 const Persons = require('../models/Persons');
 
 module.exports = {
-    async addColor(req, res){
-        let { name }= req.body;
+    async addChild(req, res){
+        let { name, personId }= req.body;
         
         try {
-            await Colors.create({ name:name });
-            return res.status(200).json({msg: 'Color created'});    
+            await Childs.create({ name:name, PersonId: personId });
+            return res.status(200).json({msg: 'Child created'});    
         } catch (error) {
             return res.status(500).json({ error: error.message })  
         }
     },
 
-    async showColors(req, res){
+    async showChild(req, res){
+        let { uuid }= req.body;
         try {
-            colors = await Colors.findAll();
-            res.json(colors);
+            let child = await Colors.find({ where: { uuid: uuid } })
+            res.json(child);
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }
     },
-    async updateColor(req, res){
+    async updateChild(req, res){
         const { uuid } = req.params;
-        const { name } = req.body;
+        const { name, personId } = req.body;
+
         try {
-            await Colors.update({ name: name }, { where: { uuid: uuid } });
-            res.json({ msg: 'Color Updated' });
+            await Childs.update({ name: name, PersonId: personId }, { where: { uuid: uuid } });
+            res.json({ msg: 'Child Updated' });
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }
     },
 
-    async deleteColor(req, res){
+    async deleteChild(req, res){
         const { uuid } = req.params;
         try {
-            await Colors.destroy({ where: { uuid: uuid }});
-            res.json({ msg: 'Color Deleted' });
+            await Childs.destroy({ where: { uuid: uuid }});
+            res.json({ msg: 'Child Deleted' });
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }
