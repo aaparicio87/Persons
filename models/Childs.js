@@ -12,27 +12,21 @@ const Childs = db.define('Childs', {
 
     name: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            isAlpha: {
-                msg: "Name must containg only letters"
-            },
-            len: {
-                args: [20, 150],
-                msg: "The name must contain minimun 2 characters"
-            }
-        }
+        allowNull: false
     },
+
     updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
-      createdAt: {
+
+    createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
+
     uuid: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4 
@@ -41,5 +35,8 @@ const Childs = db.define('Childs', {
     tableName: 'Childs'
   });
 
+  Persons.hasMany(Childs, { onDelete: 'CASCADE', foreignKey: {
+    allowNull: false
+  }})
   Childs.belongsTo(Persons);
   module.exports = Childs;

@@ -1,5 +1,6 @@
 const Persons = require('../models/Persons');
-const Childs = require('../models/Childs')
+const Childs = require('../models/Childs');
+const sequelize = require('../config/db');
 
 module.exports = {
 
@@ -23,8 +24,8 @@ module.exports = {
     async showPersons(req, res){
         try {
             const persons = await Persons.findAll({
-                attributes: ['*', sequelize.fn('COUNT', sequelize.col('Childs.PersonId')), "childCount"],
-                include: { model:Childs, required: true }
+                attributes: { include: [[sequelize.fn('COUNT', sequelize.col('Childs.PersonId')), 'no_childs']] },
+                include: { model: Childs, attributes: [], required: false }
             })
             return res.status(200).json({ persons: persons });
         } catch (error) {
@@ -35,7 +36,9 @@ module.exports = {
     async showPerson(req, res){
         const { uuid } = req.params;
         try {
-            let person = await Persons.findOne({ where : { uuid: uuid } , include: { model:Childs, required: true }});
+            let person = await Persons.findOne({ 
+                where : { uuid: uuid } , include: { model:Childs, required: true }
+            });
             if (!person){
                 res.json({msg: 'Person does not exist'});
             }

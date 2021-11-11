@@ -20,9 +20,7 @@ module.exports = {
                 if (bcrypt.compareSync(password, user.password)) {
 
                     // Create a token
-                    let token = jwt.sign({ user: user }, authConfig.secret, {
-                        expiresIn: authConfig.expires
-                    });
+                    let token = jwt.sign({ user: user }, authConfig.secret);
 
                     res.json({
                         accessToken: token
@@ -42,26 +40,22 @@ module.exports = {
 
     // Registro
     async signUp(req, res) {
-
-        const { email, password, admin} = req.body;
+        const { email, password} = req.body;
 
         // Encrypt Pass
         let passw = bcrypt.hashSync(password, Number.parseInt(authConfig.rounds));
         try {
             const user = await Users.create({
                 email: email,
-                password: passw,
-                admin: admin
+                password: passw
             });
             
-            let token = jwt.sign({ user: user }, authConfig.secret, {
-                expiresIn: authConfig.expires
-            });
+            let token = jwt.sign({ user: user }, authConfig.secret);
 
-            return res.json({ user: user, accessToken: token });
+            return res.status(200).json({ user: user, accessToken: token });
 
         } catch (error) {
-            res.status(500).json({err: error});
+            res.status(500).json({ err: error });
         }
     }
 }

@@ -14,7 +14,8 @@ router.post('/api/signup', AuthController.signUp);
 
 // Child CRUD
 router.post('/api/childs', auth, ChildController.addChild);
-router.get('/api/childs', auth, ChildController.showChild);
+router.get('/api/childs', auth, ChildController.showChilds);
+router.put('/api/childs/:uuid',auth, ChildController.updateChild);
 router.delete('/api/childs/:uuid', auth, ChildController.deleteChild);
 
 

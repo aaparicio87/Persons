@@ -3,20 +3,20 @@ const Persons = require('../models/Persons');
 
 module.exports = {
     async addChild(req, res){
-        let { name, personId }= req.body;
+        let { name, PersonId }= req.body;
         
         try {
-            await Childs.create({ name:name, PersonId: personId });
+            await Childs.create({ name:name, PersonId: PersonId });
             return res.status(200).json({msg: 'Child created'});    
         } catch (error) {
             return res.status(500).json({ error: error.message })  
         }
     },
 
-    async showChild(req, res){
+    async showChilds(req, res){
         let { uuid }= req.body;
         try {
-            let child = await Colors.find({ where: { uuid: uuid } })
+            let child = await Childs.findAll()
             res.json(child);
         } catch (error) {
             return res.status(500).json({ error: error.message })

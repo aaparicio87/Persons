@@ -12,29 +12,11 @@ const Persons = db.define('Persons', {
 
     firstName: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            isAlpha: {
-                msg: "Name must containg only letters"
-            },
-            len: {
-                args: [20, 150],
-                msg: "The name must contain minimun 20 characters"
-            }
-        }
+        allowNull: false
     },
     lastName: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            isAlpha: {
-                msg: "Last name must containg only letters"
-            },
-            len: {
-                args: [20, 150],
-                msg: "The last name must contain minimun 2 characters"
-            }
-        }
+        allowNull: false
     },
     gender: {
         type: DataTypes.ENUM("Male", "Female", "Others"),
@@ -67,5 +49,4 @@ const Persons = db.define('Persons', {
   },{
     tableName: 'Persons'
   });
-  Persons.hasMany(Childs, { onDelete: 'cascade' })
   module.exports = Persons;
