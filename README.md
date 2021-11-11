@@ -1,4 +1,4 @@
-# Students
+# Persons
 
 ## Prerequisites
 
